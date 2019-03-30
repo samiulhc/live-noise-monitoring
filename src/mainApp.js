@@ -7,6 +7,7 @@ const path = require('path');
 const express = require('express');
 
 const dataDownload = require('./dataDownload.js');
+var port = process.env.PORT || 8080;
 
 /// Global variables
 // var netBoxInfo = [{
@@ -100,7 +101,7 @@ mainApp.get('',(req,res)=>{
 });
 
 /// Using only express
-mainApp.listen(8080, ()=>{
+mainApp.listen(port, ()=>{
   console.log('Listening on port 8080...');
 });
 
