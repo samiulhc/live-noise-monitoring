@@ -102,7 +102,7 @@ mainApp.get('',(req,res)=>{
 
 /// Using only express
 mainApp.listen(port, ()=>{
-  console.log('Listening on port 8080...');
+  console.log('Listening on port: '+ port);
 });
 
 // //// Using HTTP
