@@ -6,7 +6,7 @@ function testFunc(){
     return "this is a test";
 }
 
-function downloadRemoteData(netBoxInfo, destinationPath,index,callback){    
+function downloadRemoteData(netBoxInfo,callback){    
     // var Client = require('C:/Users/schoudhury/AppData/Roaming/npm/node_modules/ssh2-sftp-client');
     var Client = require('ssh2-sftp-client');
     var sftp = new Client();
@@ -95,17 +95,17 @@ function getData(netBoxInfo){
         // destinationPath = "C:/Users/schoudhury/Patching Associates/IPP-19-001 CSS Improvement Part Deux - Documents/General/Analysis/ML Analysis/output.txt"
         
         // destinationPath = "C:/Users/schoudhury/Patching Associates/IPP-19-001 CSS Improvement Part Deux - Documents/General/Analysis/ML Analysis/output" + i.toString() +".txt";
-        destinationPath = "X:/_Templates from SC/nodeJSOutput/output" + i.toString() +".txt";
+        // destinationPath = "X:/_Templates from SC/nodeJSOutput/output" + i.toString() +".txt";
         
-        console.log(destinationPath);
+        // console.log(destinationPath);
         // var openFile = Promise.promisify(fs.open);
         // openFile(destinationPath).catch((err)=>{
         //     fs.writeFileSync(destinationPath,'');
         // });
 
-        fs.writeFileSync(destinationPath,'');
+        // fs.writeFileSync(destinationPath,'');
         
-        promises.push(downloadRemoteDataPromised(netBoxInfo[i],destinationPath, i).then((data)=>{
+        promises.push(downloadRemoteDataPromised(netBoxInfo[i]).then((data)=>{
             return data;
         }));
 
