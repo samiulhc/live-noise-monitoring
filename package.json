@@ -1,9 +1,9 @@
 {
-  "name": "LiveMonitoring",
+  "name": "livemonitoring",
   "version": "1.0.0",
   "main": "mainApp.js",
   "scripts": {
-    "start":"node src/mainApp.js",
+    "start": "node src/mainApp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,5 +16,13 @@
     "ssh2-sftp-client": "^2.5.0"
   },
   "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samiulhc/live-noise-monitoring.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samiulhc/live-noise-monitoring/issues"
+  },
+  "homepage": "https://github.com/samiulhc/live-noise-monitoring#readme",
   "description": ""
 }

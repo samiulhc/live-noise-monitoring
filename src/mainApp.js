@@ -7,7 +7,7 @@ const path = require('path');
 const express = require('express');
 
 const dataDownload = require('./dataDownload.js');
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 /// Global variables
 // var netBoxInfo = [{
