@@ -5,11 +5,13 @@
 var http = require('http');
 const path = require('path');
 const express = require('express');
+const hbs = require('hbs');
+var Promise = require('bluebird');
 
 const dataDownload = require('./dataDownload.js');
 const port = process.env.PORT || 8080;
 
-/// Global variables
+// Global variables
 // var netBoxInfo = [{
 //   netBoxSerialNumber: 'CDZNZ-7PPUV',
 //   name: 'Facility Fenceline Monitor',
@@ -25,7 +27,7 @@ var netBoxInfo = [{
   name: 'Facility Fenceline Monitor',
   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
 },{
-  netBoxSerialNumber: 'CDZNZ-7PPUV',
+  netBoxSerialNumber: 'CDZNZ-7PPUV',//'CDZNZ-7PPUV',
   name: 'Residence R23A Monitor',
   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
 },{
@@ -39,39 +41,65 @@ var netBoxInfo = [{
 const mainApp = express(); // Create express server instance
 
 const publicDirPath = path.join(__dirname, '../public'); // Setting up static root directory for HTML
+const viewsDirPath = path.join(__dirname,'../templates/views');
+const partialDirPath = path.join(__dirname,'../templates/partials');
 
 mainApp.set('view engine','hbs');
+mainApp.set('views',viewsDirPath);
+hbs.registerPartials(partialDirPath);
+
 mainApp.use(express.static(publicDirPath));
 
 //// Route Handler
-mainApp.get('',(req,res)=>{
+mainApp.get('/',(req,res)=>{
+  // console.log(req.url);
+  res.render('index',{});
+  // dataDownload.getData(netBoxInfo).then((dataArray)=>{
+  //   htmlData = {};
+  //   htmlData.data = dataArray;
+  //   // res.send("");
+  //   res.render('index',htmlData);
+  // });
+});
+
+mainApp.get('/graph',(req,res)=>{
   dataDownload.getData(netBoxInfo).then((dataArray)=>{
-    // console.log("DataArray:");
-    // console.log(dataArray);
     htmlData = {};
     htmlData.data = dataArray;
-    res.render('index',htmlData);
-          //       // setTimeout(() => {
-          //         var lineArray = fs.readFileSync(destinationPath).toString().split('\n');
-          //         console.log("lineArray: \n" +lineArray);
-          //         x = [];
-          //         y = [];
-          //         for (var j = 24;j<lineArray.length-2;j++){
-          //             x[j-24]  = '"'+ lineArray[j].split('\t')[1].replace(/\s+/g,'') + ' ' + lineArray[j].split('\t')[2].replace(/\s+/g,'')+'"';
-          //             // x[j-24]  = lineArray[j].split('\t')[1].replace(/\s+/g,'')+ " " + lineArray[j].split('\t')[2].replace(/\s+/g,'');
-          //             y[j-24]  = parseFloat(lineArray[j].split('\t')[11]);
-          //         }
-          //         data[i] = {};
-                  
-          //         // data[i].name = netBoxInfo[i].name;
-          //         // data[i].netBoxSerialNumber = netBoxInfo[i].netBoxSerialNumber;
-          //         data[i].data_x = x;
-          //         data[i].data_y = y;
-          //         console.log("x: \n" + x);
-          //     });
-          // }
-      
+    // res.send("");
+    res.render('graph',htmlData);
+  
   });
+});
+
+// mainApp.get('/graph',(req,res)=>{
+//   dataDownload.getData(netBoxInfo).then((dataArray)=>{
+//     // console.log("DataArray:");
+//     // console.log(dataArray);
+//     htmlData = {};
+//     htmlData.data = dataArray;
+//     res.render('index',htmlData);
+//           //       // setTimeout(() => {
+//           //         var lineArray = fs.readFileSync(destinationPath).toString().split('\n');
+//           //         console.log("lineArray: \n" +lineArray);
+//           //         x = [];
+//           //         y = [];
+//           //         for (var j = 24;j<lineArray.length-2;j++){
+//           //             x[j-24]  = '"'+ lineArray[j].split('\t')[1].replace(/\s+/g,'') + ' ' + lineArray[j].split('\t')[2].replace(/\s+/g,'')+'"';
+//           //             // x[j-24]  = lineArray[j].split('\t')[1].replace(/\s+/g,'')+ " " + lineArray[j].split('\t')[2].replace(/\s+/g,'');
+//           //             y[j-24]  = parseFloat(lineArray[j].split('\t')[11]);
+//           //         }
+//           //         data[i] = {};
+                  
+//           //         // data[i].name = netBoxInfo[i].name;
+//           //         // data[i].netBoxSerialNumber = netBoxInfo[i].netBoxSerialNumber;
+//           //         data[i].data_x = x;
+//           //         data[i].data_y = y;
+//           //         console.log("x: \n" + x);
+//           //     });
+//           // }
+      
+//   });
     // var htmlData = {};
     // htmlData.data = data;
     // console.log(htmlData);
@@ -98,7 +126,7 @@ mainApp.get('',(req,res)=>{
     // res.render('index',htmlData);  
   // }, 5000);
   
-});
+// });
 
 /// Using only express
 mainApp.listen(port, ()=>{
@@ -146,5 +174,3 @@ mainApp.listen(port, ()=>{
 // });
 
 // server.listen(8080);
-
-

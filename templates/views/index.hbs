@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    {{>header}}   
+    <body>
+        <div class="container-fluid">
+            <div class="headerContainer">
+                <h1>Live Noise Monitoring</h1>
+            </div>
+
+            <div class = "wait">
+                <h3> Data is being fetched. Please wait....</h3>
+                <p style="height=40px"></p>
+                <div class="loader"></div>
+            </div> 
+            <script>
+                function timedRedirect(timeoutPeriod) {
+                    setTimeout(function(){
+                        location.replace("/graph");
+                    },timeoutPeriod);
+                }
+                window.onload = timedRedirect(2000);   // Reload page
+            </script>
+        </div>
+    </body>
+</html>
