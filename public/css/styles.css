@@ -2,6 +2,11 @@
     width: 500px;
     height:80px;
 }
+
+#select_meter{
+    width:200px;
+    height:200px;
+}
 /* 
 h1 {
     background-color: rgb(62, 136, 93);

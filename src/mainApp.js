@@ -6,39 +6,59 @@ var http = require('http');
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-var Promise = require('bluebird');
+
+// var Promise = require('bluebird');
 
 const dataDownload = require('./dataDownload.js');
 const port = process.env.PORT || 8080;
 
 // Global variables
-// var netBoxInfo = [{
-//   netBoxSerialNumber: 'CDZNZ-7PPUV',
-//   name: 'Facility Fenceline Monitor',
-//   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
-// },{
-//   netBoxSerialNumber: 'DCL74-UXUPM',
-//   name: 'Residence Monitor',
-//   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
-// }];
+
+const admin = {
+  userName: "admin",
+  passWord: "paae"
+};
+
+const meterInfo =[{
+  netBoxSerialNumber:'CDZNZ-7PPUV',
+  meterName:'NTI_3'
+},{
+  netBoxSerialNumber:'DCL74-UXUPM',
+  meterName:'NTI_5'
+},{
+  netBoxSerialNumber:'FSUZA-NXCCM',
+  meterName:'NTI_2'
+},{
+  netBoxSerialNumber:'HHJKH-YXHUR',
+  meterName:'NTI_6'
+},{
+  netBoxSerialNumber:'SJL5S-AXCV9',
+  meterName:'NTI_1'
+},{
+  netBoxSerialNumber:'ZXFER-XFDCV',
+  meterName:'NTI_4'
+}];
+
 
 var netBoxInfo = [{
   netBoxSerialNumber: 'DCL74-UXUPM',
-  name: 'Facility Fenceline Monitor',
+  name: 'Unknown',
   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
 },{
   netBoxSerialNumber: 'CDZNZ-7PPUV',//'CDZNZ-7PPUV',
-  name: 'Residence R23A Monitor',
+  name: 'Unknown',
   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
 },{
   netBoxSerialNumber: 'ZXFER-XFDCV',
-  name: 'Residence R24A Monitor',
+  name: 'Unknown',
   netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
 }];
 
 
 ///// Creating and running server
 const mainApp = express(); // Create express server instance
+const server = http.Server(mainApp);
+var io = require('socket.io')(server);
 
 const publicDirPath = path.join(__dirname, '../public'); // Setting up static root directory for HTML
 const viewsDirPath = path.join(__dirname,'../templates/views');
@@ -71,6 +91,57 @@ mainApp.get('/graph',(req,res)=>{
   
   });
 });
+
+mainApp.get('/login',(req,res)=>{
+  res.render('login',{})
+});
+
+mainApp.get('/meters',(req,res)=>{
+  meter = {};
+  meter.meterInfo=meterInfo;
+  res.render('meters',meter);
+});
+
+io.on('connection',function(socket){
+  socket.on('login',function(data){
+    if(data.username === admin.userName && data.password === admin.passWord){
+      socket.emit('login_successful','/meters');
+    }else{
+      socket.emit('login_failed','Invalid Login, please try again');
+    }
+  });
+
+  socket.on('update_meter_list',function(data){
+    netBoxInfo = [];
+    var temp={};
+    for(var i=0;i<data.sn.length;i++){
+      temp={};
+      temp.netBoxSerialNumber = data.sn[i];
+      temp.name = data.loc[i];
+      temp.netBoxDataFile= '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt';
+      netBoxInfo.push(temp);
+    }
+    socket.emit('meter_list_update_successful','Meter list has been updated successfully');
+    console.log(netBoxInfo);
+  });
+});
+
+
+server.listen(port,()=>{
+  console.log('Listening on port: '+ port);
+});
+
+
+// /// Using only express
+// mainApp.listen(port, ()=>{
+//   console.log('Listening on port: '+ port);
+// });
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 // mainApp.get('/graph',(req,res)=>{
 //   dataDownload.getData(netBoxInfo).then((dataArray)=>{
@@ -127,11 +198,6 @@ mainApp.get('/graph',(req,res)=>{
   // }, 5000);
   
 // });
-
-/// Using only express
-mainApp.listen(port, ()=>{
-  console.log('Listening on port: '+ port);
-});
 
 // //// Using HTTP
 // var server = http.createServer(mainApp).listen(8080);
