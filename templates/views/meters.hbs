@@ -84,6 +84,10 @@
                         $("#error_message").text(data);
                     });
 
+                    socket.on('meter_list_update_failed',function(data){
+                        $("#error_message").text(data);
+                    });
+
                 });
             </script>
         </div>

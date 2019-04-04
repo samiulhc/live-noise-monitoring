@@ -6,13 +6,13 @@ var http = require('http');
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-
-// var Promise = require('bluebird');
+const fs = require('fs');
+const Promise = require('bluebird');
 
 const dataDownload = require('./dataDownload.js');
-const port = process.env.PORT || 8080;
 
 // Global variables
+const port = process.env.PORT || 8080;
 
 const admin = {
   userName: "admin",
@@ -39,21 +39,13 @@ const meterInfo =[{
   meterName:'NTI_4'
 }];
 
-
-var netBoxInfo = [{
-  netBoxSerialNumber: 'DCL74-UXUPM',
+const emptyArr = [{
   name: 'Unknown',
-  netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
-},{
-  netBoxSerialNumber: 'CDZNZ-7PPUV',//'CDZNZ-7PPUV',
-  name: 'Unknown',
-  netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
-},{
-  netBoxSerialNumber: 'ZXFER-XFDCV',
-  name: 'Unknown',
-  netBoxDataFile: '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt'
+  netBoxSerialNumber: 'Unknown',
+  data_x: [],
+  data_y: [],
+  flag: 0
 }];
-
 
 ///// Creating and running server
 const mainApp = express(); // Create express server instance
@@ -63,6 +55,7 @@ var io = require('socket.io')(server);
 const publicDirPath = path.join(__dirname, '../public'); // Setting up static root directory for HTML
 const viewsDirPath = path.join(__dirname,'../templates/views');
 const partialDirPath = path.join(__dirname,'../templates/partials');
+const meterInfoBaseFile = path.join(__dirname,'../public/txt/netBoxInfo.json');
 
 mainApp.set('view engine','hbs');
 mainApp.set('views',viewsDirPath);
@@ -72,23 +65,22 @@ mainApp.use(express.static(publicDirPath));
 
 //// Route Handler
 mainApp.get('/',(req,res)=>{
-  // console.log(req.url);
   res.render('index',{});
-  // dataDownload.getData(netBoxInfo).then((dataArray)=>{
-  //   htmlData = {};
-  //   htmlData.data = dataArray;
-  //   // res.send("");
-  //   res.render('index',htmlData);
-  // });
 });
 
 mainApp.get('/graph',(req,res)=>{
-  dataDownload.getData(netBoxInfo).then((dataArray)=>{
+  var readFilePromised = Promise.promisify(fs.readFile);
+  readFilePromised(meterInfoBaseFile).then((data)=>{
+    var netBoxInfoData = JSON.parse(data);
+    dataDownload.getData(netBoxInfoData.data).then((dataArray)=>{
+      htmlData = {};
+      htmlData.data = dataArray;
+      res.render('graph',htmlData);
+    });
+  }).catch((err)=>{
     htmlData = {};
-    htmlData.data = dataArray;
-    // res.send("");
-    res.render('graph',htmlData);
-  
+      htmlData.data = emptyArr;
+      res.render('graph',htmlData);
   });
 });
 
@@ -121,8 +113,17 @@ io.on('connection',function(socket){
       temp.netBoxDataFile= '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt';
       netBoxInfo.push(temp);
     }
-    socket.emit('meter_list_update_successful','Meter list has been updated successfully');
-    console.log(netBoxInfo);
+    var writeFilePromised = Promise.promisify(fs.writeFile);
+    var dataToWrite = {};
+    dataToWrite.data = netBoxInfo;
+
+    writeFilePromised(meterInfoBaseFile,JSON.stringify(dataToWrite)).then(()=>{
+      socket.emit('meter_list_update_successful','Meter list has been updated successfully');
+      console.log("Data written to File");  
+    }).catch((err)=>{
+      console.log(err);
+      socket.emit('meter_list_update_failed','Could not update meter list. Please try again...');
+    });
   });
 });
 
@@ -142,6 +143,28 @@ server.listen(port,()=>{
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
+
+// mainApp.get('/test',(req,res)=>{
+//   var readFilePromised = Promise.promisify(fs.readFile);
+//   readFilePromised(meterInfoBaseFile).then((data)=>{
+//     var netBoxInfoData = JSON.parse(data);
+//     console.log(netBoxInfoData.data);  
+//   });
+// });
+
+
+// mainApp.get('/testwrite',(req,res)=>{
+//   var writeFilePromised = Promise.promisify(fs.writeFile);
+//   dataToWrite = {};
+//   dataToWrite.data = netBoxInfo;
+
+//   writeFilePromised(meterInfoBaseFile,JSON.stringify(dataToWrite)).then(()=>{
+//     console.log("Data written to File");  
+//   }).catch((err)=>{
+//     console.log(err);
+//   });
+// });
+
 
 // mainApp.get('/graph',(req,res)=>{
 //   dataDownload.getData(netBoxInfo).then((dataArray)=>{
