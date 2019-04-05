@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.5.3",
     "express": "^4.16.4",
+    "fulcrum-app": "^2.4.0",
     "hbs": "^4.0.3",
     "socket.io": "^2.2.0",
     "ssh2-sftp-client": "^2.5.0"

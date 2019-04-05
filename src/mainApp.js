@@ -6,12 +6,16 @@ var http = require('http');
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-const fs = require('fs');
-const Promise = require('bluebird');
+// const fs = require('fs');
+// const Promise = require('bluebird');
+const fulcrum = require('fulcrum-app');
+const Client = fulcrum.Client;
 
 const dataDownload = require('./dataDownload.js');
 
 // Global variables
+const client = new Client('7a3710497f30033f3fecc1fec4bdbf003f26dbeb1e669a6b10380e39e4d7bb1508b7747272c478c4');
+
 const port = process.env.PORT || 8080;
 
 const admin = {
@@ -69,19 +73,34 @@ mainApp.get('/',(req,res)=>{
 });
 
 mainApp.get('/graph',(req,res)=>{
-  var readFilePromised = Promise.promisify(fs.readFile);
-  readFilePromised(meterInfoBaseFile).then((data)=>{
-    var netBoxInfoData = JSON.parse(data);
+  client.records.find('7509221c-eb3b-40e2-aea9-6668db724719').then((record) => {
+    var netBoxInfoData = JSON.parse(record.form_values['4569']);
     dataDownload.getData(netBoxInfoData.data).then((dataArray)=>{
       htmlData = {};
       htmlData.data = dataArray;
       res.render('graph',htmlData);
     });
-  }).catch((err)=>{
+  }).catch((error) => {
+    console.log(error.message);
     htmlData = {};
-      htmlData.data = emptyArr;
-      res.render('graph',htmlData);
+    htmlData.data = emptyArr;
+    res.render('graph',htmlData);
   });
+    
+
+  // var readFilePromised = Promise.promisify(fs.readFile);
+  // readFilePromised(meterInfoBaseFile).then((data)=>{
+  //   var netBoxInfoData = JSON.parse(data);
+  //   dataDownload.getData(netBoxInfoData.data).then((dataArray)=>{
+  //     htmlData = {};
+  //     htmlData.data = dataArray;
+  //     res.render('graph',htmlData);
+  //   });
+  // }).catch((err)=>{
+  //   htmlData = {};
+  //     htmlData.data = emptyArr;
+  //     res.render('graph',htmlData);
+  // });
 });
 
 mainApp.get('/login',(req,res)=>{
@@ -113,19 +132,37 @@ io.on('connection',function(socket){
       temp.netBoxDataFile= '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt';
       netBoxInfo.push(temp);
     }
-    var writeFilePromised = Promise.promisify(fs.writeFile);
     var dataToWrite = {};
     dataToWrite.data = netBoxInfo;
 
-    writeFilePromised(meterInfoBaseFile,JSON.stringify(dataToWrite)).then(()=>{
+    const obj = {
+      id: '7509221c-eb3b-40e2-aea9-6668db724719',
+      form_values: {
+        '4569': JSON.stringify(dataToWrite)
+      }
+    }
+    
+    client.records.update(obj.id,obj).then((record)=>{
       socket.emit('meter_list_update_successful','Meter list has been updated successfully');
-      console.log("Data written to File");  
-    }).catch((err)=>{
-      console.log(err);
+      console.log("Data written to File");
+    }).catch((error)=>{
       socket.emit('meter_list_update_failed','Could not update meter list. Please try again...');
+      console.log(error.message);
     });
   });
+
 });
+// var writeFilePromised = Promise.promisify(fs.writeFile);
+    // var dataToWrite = {};
+    // dataToWrite.data = netBoxInfo;
+
+    // writeFilePromised(meterInfoBaseFile,JSON.stringify(dataToWrite)).then(()=>{
+      // socket.emit('meter_list_update_successful','Meter list has been updated successfully');
+      // console.log("Data written to File");  
+    // }).catch((err)=>{
+    //   console.log(err);
+    //   socket.emit('meter_list_update_failed','Could not update meter list. Please try again...');
+    // });
 
 
 server.listen(port,()=>{
