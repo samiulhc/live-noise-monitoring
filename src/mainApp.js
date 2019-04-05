@@ -60,6 +60,7 @@ const publicDirPath = path.join(__dirname, '../public'); // Setting up static ro
 const viewsDirPath = path.join(__dirname,'../templates/views');
 const partialDirPath = path.join(__dirname,'../templates/partials');
 const meterInfoBaseFile = path.join(__dirname,'../public/txt/netBoxInfo.json');
+var loginFlag = false;
 
 mainApp.set('view engine','hbs');
 mainApp.set('views',viewsDirPath);
@@ -108,16 +109,24 @@ mainApp.get('/login',(req,res)=>{
 });
 
 mainApp.get('/meters',(req,res)=>{
-  meter = {};
-  meter.meterInfo=meterInfo;
-  res.render('meters',meter);
+  if(loginFlag == false){
+    data = {message:"Please Login First!"};
+    res.render('404',data);  
+  }else if(loginFlag == true){
+    loginFlag = false;
+    meter = {};
+    meter.meterInfo=meterInfo;
+    res.render('meters',meter);
+  }
 });
 
 io.on('connection',function(socket){
   socket.on('login',function(data){
     if(data.username === admin.userName && data.password === admin.passWord){
+      loginFlag = true;
       socket.emit('login_successful','/meters');
     }else{
+      loginFlag = false;
       socket.emit('login_failed','Invalid Login, please try again');
     }
   });

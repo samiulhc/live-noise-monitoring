@@ -38,7 +38,7 @@
                     </div>
                     {{/each}}
                 </div>
-                <p id="error_message" style="color: red"></p>
+                <p id="error_message"></p>
                 <input type="button" id="button_update_meter_list" value="Update Meter List">
 
             </div> 
@@ -72,6 +72,10 @@
                         }
 
                         if(isEmptyFlag == true){
+                            if($("#error_message").hasClass("text-success")){
+                                $("#error_message").removeClass("text-success");
+                            }
+                            $("#error_message").addClass("text-danger");
                             $("#error_message").text("Please provide location info (e.g. Facility Fenceline, Residence R01 etc.)");
                         }else{
                             $("#error_message").text("");
@@ -81,10 +85,18 @@
                     });
 
                     socket.on('meter_list_update_successful',function(data){
+                        if($("#error_message").hasClass("text-danger")){
+                            $("#error_message").removeClass("text-danger");
+                        }
+                        $("#error_message").addClass("text-success");
                         $("#error_message").text(data);
                     });
 
                     socket.on('meter_list_update_failed',function(data){
+                        if($("#error_message").hasClass("text-success")){
+                            $("#error_message").removeClass("text-success");
+                        }
+                        $("#error_message").addClass("text-danger");
                         $("#error_message").text(data);
                     });
 

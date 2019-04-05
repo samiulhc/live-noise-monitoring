@@ -18,10 +18,13 @@
 
             {{#each data as |item|}}
             <div class = "graphMainContainer">
-                <p> NTi Meter Location: {{item.name}}</p> 
-                <p> NTi Meter Serial No: {{item.netBoxSerialNumber}} </p>
+                <div class="row">
+                    <div class="col-sm-2"><p> <label class="font-weight-bold">  NTi Meter Location:</label> {{item.name}}</p></div> 
+                    <div class="col-sm-10"><p> <label class="font-weight-bold"> NTi Meter Serial No:</label> {{item.netBoxSerialNumber}} </p></div>
+                </div>
                 <div class = "graphContainer" id= "graphContainer{{@index}}"></div>
             </div>  
+            <br>
             {{/each}}
 
             <script>
@@ -35,7 +38,7 @@
                     showlegened: 'false',
                     yaxis:{
                         title:'Sound Level (dBA)',
-                        range:[30,90],
+                        range:[20,90],
                         mirror: true,
                         showline:true
                     },
