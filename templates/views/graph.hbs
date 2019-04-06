@@ -16,6 +16,8 @@
                 <h1>Live Noise Monitoring</h1>
             </div>
 
+            <div id="googleMap" class="graphMainContainer"></div><br>
+
             {{#each data as |item|}}
             <div class = "graphMainContainer">
                 <div class="row">
@@ -26,53 +28,94 @@
             </div>  
             <br>
             {{/each}}
-
-            <script>
-                function timedRefresh(timeoutPeriod) {
-                    setTimeout("location.reload(true);",timeoutPeriod);
-                }
-                window.onload = timedRefresh(300000);   // Reload page
-                
-                var layout = {
-                    title: 'Continuous Sound Level',
-                    showlegened: 'false',
-                    yaxis:{
-                        title:'Sound Level (dBA)',
-                        range:[20,90],
-                        mirror: true,
-                        showline:true
-                    },
-                    xaxis:{
-                        title:'Time',
-                        mirror: true,
-                        showline:true
-                    }
-                }
-                var graphContainer;
-                var flag;
-                {{#each data as |item|}}
-                        graphContainer = document.getElementById("graphContainer{{@index}}");
-                        flag = {{item.flag}};
-                        if(flag == 1){
-                        Plotly.plot(graphContainer, [{
-                            x: [{{{item.data_x}}}],
-                            y: [{{item.data_y}}],
-                            margin: { t: 0 },
-                            type:'Line'} ],layout);         
-                        }else if(flag == 0){
-                        Plotly.plot(graphContainer, [{
-                            x: [],
-                            y: [],
-                            margin: { t: 0 },
-                            type:'Line'} ],layout);                             
-                        }
-                {{/each}}
-                //var interval = setInterval(function(){
-                //    Plotly.extendTraces('graphContainer', { y: [[getRandomData()]] }, [0])
-                //},200);
-            </script>
         </div>
-        
+        <script>
+            function timedRefresh(timeoutPeriod) {
+                setTimeout("location.reload(true);",timeoutPeriod);
+            }
+            window.onload = timedRefresh(300000);   // Reload page
+            
+            var layout = {
+                title: 'Continuous Sound Level',
+                showlegened: 'false',
+                yaxis:{
+                    title:'Sound Level (dBA)',
+                    range:[20,90],
+                    mirror: true,
+                    showline:true
+                },
+                xaxis:{
+                    title:'Time',
+                    mirror: true,
+                    showline:true
+                }
+            }
+            var graphContainer;
+            var flag;
+            {{#each data as |item|}}
+                    graphContainer = document.getElementById("graphContainer{{@index}}");
+                    flag = {{item.flag}};
+                    if(flag == 1){
+                    Plotly.plot(graphContainer, [{
+                        x: [{{{item.data_x}}}],
+                        y: [{{item.data_y}}],
+                        margin: { t: 0 },
+                        type:'Line'} ],layout);         
+                    }else if(flag == 0){
+                    Plotly.plot(graphContainer, [{
+                        x: [],
+                        y: [],
+                        margin: { t: 0 },
+                        type:'Line'} ],layout);                             
+                    }
+            {{/each}}
+            //var interval = setInterval(function(){
+            //    Plotly.extendTraces('graphContainer', { y: [[getRandomData()]] }, [0])
+            //},200);
+        </script>
+        <script>
+            var meterLocationsLat = [];
+            var meterLocationsLong = [];
+            var locations=[];
+            {{#each data as |item|}}
+            meterLocationsLat.push(parseFloat("{{item.lat}}"));
+            meterLocationsLong.push(parseFloat("{{item.long}}"));
+            locations.push('{{item.name}}');
+            {{/each}}
+            var tempLat =0.0;
+            var tempLong =0.0;
+            var klat = 0;
+            var klong = 0;
+            for(var i=0;i<meterLocationsLat.length;i++){
+                if(meterLocationsLat[i]!=0){
+                    tempLat = tempLat + meterLocationsLat[i];
+                    klat++;
+                }
+                if(meterLocationsLong[i]!=0){
+                    tempLong = tempLong + meterLocationsLong[i];
+                    klong++;
+                }
+            }
+            var centerLoc=[tempLat/klat,tempLong/klong];
+
+            function loadMap() {
+                var mapOptions= {
+                center:new google.maps.LatLng(centerLoc[0],centerLoc[1]),
+                zoom:15
+                };
+
+                var map = new google.maps.Map(document.getElementById("googleMap"),mapOptions);
+                
+                {{#each data as |item|}}
+                    var marker{{@index}} = new google.maps.Marker({
+                        position: new google.maps.LatLng(meterLocationsLat[{{@index}}], meterLocationsLong[{{@index}}]),
+                        map: map,
+                        title: locations[{{@index}}]
+                    });
+                {{/each}}
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB3uKupYmpuiBhQb8MjRvfaR8wEKjG9SGU&callback=loadMap"></script>
     </body>
 </html>
 

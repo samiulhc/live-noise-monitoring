@@ -32,6 +32,8 @@ function downloadRemoteData(netBoxInfo,callback){
         data.netBoxSerialNumber = netBoxInfo.netBoxSerialNumber;
         data.data_x = x;
         data.data_y = y;
+        data.lat=netBoxInfo.lat;
+        data.long=netBoxInfo.long;
         data.flag = 1;
         callback(undefined,data);
     }).catch((err)=>{
@@ -42,6 +44,8 @@ function downloadRemoteData(netBoxInfo,callback){
         data.netBoxSerialNumber = netBoxInfo.netBoxSerialNumber;
         data.data_x = [];
         data.data_y = [];
+        data.lat=netBoxInfo.lat;
+        data.long=netBoxInfo.long;
         data.flag = 0;
         callback(data,undefined);    
     });

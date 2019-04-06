@@ -48,6 +48,8 @@ const emptyArr = [{
   netBoxSerialNumber: 'Unknown',
   data_x: [],
   data_y: [],
+  lat:0,
+  long:0,
   flag: 0
 }];
 
@@ -108,6 +110,10 @@ mainApp.get('/login',(req,res)=>{
   res.render('login',{})
 });
 
+// mainApp.get('/test',(req,res)=>{
+//   res.render('test',{})
+// });
+
 mainApp.get('/meters',(req,res)=>{
   if(loginFlag == false){
     data = {message:"Please Login First!"};
@@ -139,6 +145,17 @@ io.on('connection',function(socket){
       temp.netBoxSerialNumber = data.sn[i];
       temp.name = data.loc[i];
       temp.netBoxDataFile= '/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt';
+      if(data.lat[i]==""){
+        temp.lat="0";
+      }else{
+        temp.lat=data.lat[i];
+      }
+      
+      if(data.long[i]==""){
+        temp.long="0";
+      }else{
+        temp.long=data.long[i];
+      }
       netBoxInfo.push(temp);
     }
     var dataToWrite = {};

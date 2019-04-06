@@ -1,37 +1,34 @@
-const fulcrum = require('fulcrum-app');
-const Client = fulcrum.Client;
 
-const client = new Client('7a3710497f30033f3fecc1fec4bdbf003f26dbeb1e669a6b10380e39e4d7bb1508b7747272c478c4');
-client.records.find('7509221c-eb3b-40e2-aea9-6668db724719').then((record) => {
-    console.log(JSON.parse(record.form_values['4569']));
-  })
-  .catch((error) => {
-    // There was a problem with the request. Is the API token correct?
-    console.log(error.message);
-  });
 
-var net={"data":[{"netBoxSerialNumber":"ABCDE-NXCCM","name":"NOep","netBoxDataFile":"/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt"},{"netBoxSerialNumber":"HHJKH-YXHUR","name":"Res","netBoxDataFile":"/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt"}]};
 
-const obj = {
-    id: '7509221c-eb3b-40e2-aea9-6668db724719',
-    form_values: {
-      '4569': JSON.stringify(net)
-    }
-};
+/////////////// Fulcrum read and write record
+// const fulcrum = require('fulcrum-app');
+// const Client = fulcrum.Client;
 
-client.records.update(obj.id,obj).then((record)=>{
-  console.log(JSON.parse(record.form_values['4569']));
-}).catch((error)=>{
-  console.log(error.message);
-});
+// const client = new Client('7a3710497f30033f3fecc1fec4bdbf003f26dbeb1e669a6b10380e39e4d7bb1508b7747272c478c4');
+// client.records.find('7509221c-eb3b-40e2-aea9-6668db724719').then((record) => {
+//     console.log(JSON.parse(record.form_values['4569']));
+//   })
+//   .catch((error) => {
+//     // There was a problem with the request. Is the API token correct?
+//     console.log(error.message);
+//   });
 
-//   client.webhooks.update(obj.id, obj)
-//     .then((webhook) => {
-//       console.log('success', webhook);
-//     })
-//     .catch((error) => {
-//       console.log(error.message);
-//     });
+// var net={"data":[{"netBoxSerialNumber":"ABCDE-NXCCM","name":"NOep","netBoxDataFile":"/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt"},{"netBoxSerialNumber":"HHJKH-YXHUR","name":"Res","netBoxDataFile":"/NetBox/XL2/Projects/.Unsaved/SLM/_123_Rpt_Report.txt"}]};
+
+// const obj = {
+//     id: '7509221c-eb3b-40e2-aea9-6668db724719',
+//     form_values: {
+//       '4569': JSON.stringify(net)
+//     }
+// };
+
+// client.records.update(obj.id,obj).then((record)=>{
+//   console.log(JSON.parse(record.form_values['4569']));
+// }).catch((error)=>{
+//   console.log(error.message);
+// });
+
 
 
 
