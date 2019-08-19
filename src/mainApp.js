@@ -23,24 +23,22 @@ const admin = {
   passWord: "paae"
 };
 
-const meterInfo =[{
-  netBoxSerialNumber:'CDZNZ-7PPUV',
-  meterName:'NTI_3'
+const meterInfo =[
+  {
+    netBoxSerialNumber:'JKJNZ-3F7SV',
+    meterName:'NTi Unit A'
+  },{
+  netBoxSerialNumber:'FFJXM-SJNE9',
+  meterName:'NTi Unit B'
 },{
-  netBoxSerialNumber:'DCL74-UXUPM',
-  meterName:'NTI_5'
-},{
-  netBoxSerialNumber:'FSUZA-NXCCM',
-  meterName:'NTI_2'
-},{
-  netBoxSerialNumber:'HHJKH-YXHUR',
-  meterName:'NTI_6'
+  netBoxSerialNumber:'XHN9M-RNT3R',
+  meterName:'NTI Unit C'
 },{
   netBoxSerialNumber:'SJL5S-AXCV9',
-  meterName:'NTI_1'
+  meterName:'NTI Unit D'
 },{
-  netBoxSerialNumber:'ZXFER-XFDCV',
-  meterName:'NTI_4'
+  netBoxSerialNumber:'CDZNZ-7PPUV',
+  meterName:'NTI Unit E'
 }];
 
 const emptyArr = [{

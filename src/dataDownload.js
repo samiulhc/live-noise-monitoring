@@ -12,7 +12,7 @@ function downloadRemoteData(netBoxInfo,callback){
         host:'xl2gateway.nti-audio.com',
         port: '22',
         username: netBoxInfo.netBoxSerialNumber,
-        password: 'Austria'
+        password: (netBoxInfo.netBoxSerialNumber == 'SJL5S-AXCV9' || netBoxInfo.netBoxSerialNumber == 'CDZNZ-7PPUV') ?"Austria":"EngineerPAAE00"
     }).then(() => {
         // sftp.get(netBoxInfo.netBoxDataFile,destinationPath);
         // var lineArray = sftp.get(netBoxInfo.netBoxDataFile).toString().split('\n'); 

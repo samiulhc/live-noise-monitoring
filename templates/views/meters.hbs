@@ -29,18 +29,18 @@
                 </div>
                 <div class="row">
                     {{#each meterInfo as |item|}}
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <input type="checkbox" name="choice{{@index}}" id="choice{{@index}}" value="{{{item.netBoxSerialNumber}}}">  {{item.netBoxSerialNumber}}  ({{item.meterName}})
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <label for="location_choice{{@index}}">Location: </label>
                         <input type="text" name="location_choice{{@index}}" id="location_choice{{@index}}" value="" disabled>  
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <label for="lat_choice{{@index}}">Latitude: </label>
                         <input type="text" name="lat_choice{{@index}}" id="lat_choice{{@index}}" value="" disabled>  
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <label for="long_choice{{@index}}">Longitude: </label>
                         <input type="text" name="long_choice{{@index}}" id="long_choice{{@index}}" value="" disabled>  
                     </div>

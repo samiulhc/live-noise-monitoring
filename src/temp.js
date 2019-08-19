@@ -1,3 +1,31 @@
+const jsdom = require('jsdom')
+const request = require('request');
+
+const {JSDOM} = jsdom;
+
+// request('http://96.1.74.219:5000/latest.php',(err,res,body)=>{
+//     const dom = new JSDOM(body);
+    
+//     dom.window.document.querySelectorAll(".val").forEach((element)=>{
+//         console.log(element.textContent);
+//     });
+// });
+
+const test0 = function test(n){
+    a ={
+        host:'xl2gateway.nti-audio.com',
+        port: '22',
+        username: n,
+        password: (n == 'C' || n == 'D') ?"Engineer00":"Austria"
+    };
+    console.log(a.password);
+};
+
+test0('E');
+
+
+
+
 
 
 
