@@ -16,7 +16,7 @@
     "hbs": "^4.0.3",
     "jsdom": "^14.0.0",
     "request": "^2.88.0",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.5.0",
     "ssh2-sftp-client": "^2.5.0"
   },
   "devDependencies": {},
