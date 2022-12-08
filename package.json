@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.3",
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "fulcrum-app": "^2.4.0",
     "hbs": "^4.0.3",
     "jsdom": "^14.0.0",
